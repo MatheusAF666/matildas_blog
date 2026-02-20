@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explicación Detallada - Editor Markdown</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #1a1a1a;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            border-left: 4px solid #f59e0b;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #444;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre code {
+            background: none;
+            color: #d4d4d4;
+            padding: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th {
+            background: #f59e0b;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 3px;
+        }
+        
+        .diagram {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+        }
+        
+        .example {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 3px;
+        }
+        
+        .page-break {
+            page-break-after: always;
+            margin: 40px 0;
+            border-bottom: 2px dashed #ddd;
+            padding-bottom: 40px;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 40px;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+        }
+        
+        .toc ul {
+            margin: 10px 0 10px 20px;
+        }
+        
+        .toc a {
+            color: #f59e0b;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji">📝</span> Editor Markdown Avanzado</h1>
+        <p class="subtitle">Explicación Detallada de la Implementación en Vue 3 y TypeScript</p>
+        
+        <div class="toc">
+            <h3>Tabla de Contenidos</h3>
+            <ul>
+                <li><a href="#arquitectura">Arquitectura General</a></li>
+                <li><a href="#referencias">Referencias (Refs) - Estado del Editor</a></li>
+                <li><a href="#interfaz">Interfaz Visual</a></li>
+                <li><a href="#atajos">Sistema de Atajos de Teclado</a></li>
+                <li><a href="#funciones">Funciones de Inserción de Markdown</a></li>
+                <li><a href="#preview">Preview en Tiempo Real</a></li>
+                <li><a href="#backend">Integración Backend</a></li>
+                <li><a href="#flujo">Diagrama del Flujo</a></li>
+                <li><a href="#puntos">Puntos Clave de Diseño</a></li>
+            </ul>
+        </div>
+
+        <div class="section" id="arquitectura">
+            <h2><span class="emoji">🎯</span> Arquitectura General</h2>
+            <p>El editor markdown está dividido en <strong>4 componentes principales</strong> que trabajan juntos de manera sinérgica:</p>
+            
+            <h3>1. Sistema de Estados (Refs)</h3>
+            <p>Mantienen el estado reactivo del editor</p>
+            
+            <h3>2. Interfaz Visual (Template)</h3>
+            <p>Renderiza la barra de herramientas, textarea y preview</p>
+            
+            <h3>3. Manejadores de Eventos (Event Handlers)</h3>
+            <p>Capturan clics de botones y pulsaciones de teclado</p>
+            
+            <h3>4. Funciones de Transformación (Logic)</h3>
+            <p>Manipulan el contenido markdown de manera inteligente</p>
+        </div>
+
+        <div class="section" id="referencias">
+            <h2><span class="emoji">💾</span> Referencias (Refs) - Estado del Editor</h2>
+            
+            <pre><code>// Variable ref para acceso directo al textarea
+const editorRef = ref&lt;HTMLTextAreaElement | null&gt;(null)
+
+// Estados visuales
+const activeTab = ref&lt;'editor' | 'preview'&gt;('editor')
+
+// Datos del formulario principal
+const form = ref({
+  title: '',
+  slug: '',
+  content: '',          // ← Contenido markdown
+  image_path: '',
+  meta_title: '',
+  meta_description: '',
+  published_at: '',
+  user_id: 1,
+  categories: [] as number[]
+})</code></pre>
+
+            <h3>¿Por qué usar <code>editorRef</code>?</h3>
+            <p><code>editorRef</code> es la clave arquitectónica. Permite:</p>
+            <ul>
+                <li><strong>Acceso directo al DOM:</strong> Sin necesidad de querySelectorAll</li>
+                <li><strong>Manipulación precisa:</strong> Obtener selectionStart/End directamente</li>
+                <li><strong>Re-enfoque automático:</strong> Mantener el foco en el editor después de insertar</li>
+                <li><strong>Performance:</strong> Evita búsquedas DOM repetidas</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Nota técnica:</strong> Declaramos con tipo <code>HTMLTextAreaElement | null</code> porque la referencia puede no estar inicializada al principio.
+            </div>
+        </div>
+
+        <div class="section" id="interfaz">
+            <h2><span class="emoji">🎨</span> Interfaz Visual</h2>
+            
+            <h3>A) Pestañas Editor/Preview</h3>
+            <pre><code>&lt;div class="flex gap-2"&gt;
+  &lt;button @click="activeTab = 'editor'"&gt;Editor&lt;/button&gt;
+  &lt;button @click="activeTab = 'preview'"&gt;Preview&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+            <p>Características:</p>
+            <ul>
+                <li>Alterna entre modo escritura y visualización</li>
+                <li>Usa <code>v-show</code> en lugar de <code>v-if</code> para mejor performance</li>
+                <li>Mantiene el estado del contenido al cambiar de pestaña</li>
+                <li>Botones con estilos dinámicos (amber cuando activo)</li>
+            </ul>
+
+            <h3>B) Barra de Herramientas</h3>
+            <p>La barra tiene <strong>3 grupos separados por divisores visuales</strong>:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Grupo</th>
+                        <th>Botones</th>
+                        <th>Función</th>
+                        <th>Markdown Generado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Estilo de Texto</strong></td>
+                        <td>B, I, S</td>
+                        <td>Envuelve texto con markdown</td>
+                        <td><code>**bold**</code>, <code>*italic*</code>, <code>~~tachado~~</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estructura</strong></td>
+                        <td>H1, H2, H3, Listas, Citas</td>
+                        <td>Inserta bloques nuevos</td>
+                        <td><code>#</code>, <code>-</code>, <code>&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Avanzado</strong></td>
+                        <td>Código, Bloque, Enlace, Divisor</td>
+                        <td>Inserta elementos complejos</td>
+                        <td><code>```</code>, <code>[]()
+                        
+</code>, <code>---</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Implementación del Textarea</h3>
+            <pre><code>&lt;textarea
+  ref="editorRef"
+  v-model="form.content"
+  @keydown="handleEditorKeydown"
+  placeholder="Escribe en Markdown..."
+  class="min-h-96 w-full rounded-lg font-mono"
+&gt;&lt;/textarea&gt;</code></pre>
+
+            <p>Propiedades importantes:</p>
+            <ul>
+                <li><code>ref="editorRef"</code> — Acceso directo al elemento DOM</li>
+                <li><code>v-model="form.content"</code> — Vinculación bidireccional con el estado</li>
+                <li><code>@keydown="handleEditorKeydown"</code> — Captura eventos de teclado</li>
+                <li><code>min-h-96</code> — Altura mínima de 24 líneas</li>
+                <li><code>font-mono</code> — Fuente monoespaciada</li>
+            </ul>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section" id="atajos">
+            <h2><span class="emoji">⌨️</span> Sistema de Atajos de Teclado</h2>
+            
+            <p>El manejador <code>handleEditorKeydown()</code> intercepta eventos de teclado:</p>
+
+            <pre><code>const handleEditorKeydown = (event: KeyboardEvent) => {
+  // Ctrl+B - Negrita
+  if (event.ctrlKey && event.key === 'b') {
+    event.preventDefault()  // Evita comportamiento por defecto
+    insertMarkdown('**', '**', 'Texto en negrita')
+  }
+  // Ctrl+I - Cursiva
+  else if (event.ctrlKey && event.key === 'i') {
+    event.preventDefault()
+    insertMarkdown('*', '*', 'Texto en cursiva')
+  }
+  // Ctrl+K - Código inline
+  else if (event.ctrlKey && event.key === 'k') {
+    event.preventDefault()
+    insertMarkdown('`', '`', 'código')
+  }
+  // Ctrl+Shift+C - Bloque de código
+  else if (event.ctrlKey && event.shiftKey && event.key === 'C') {
+    event.preventDefault()
+    insertCodeBlock()
+  }
+  // Tab - Indentación (2 espacios)
+  else if (event.key === 'Tab') {
+    event.preventDefault()
+    const textarea = event.target as HTMLTextAreaElement
+    const start = textarea.selectionStart
+    form.value.content = 
+      form.value.content.substring(0, start) + '  ' + 
+      form.value.content.substring(start)
+  }
+}</code></pre>
+
+            <h3>Atajos Disponibles</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Atajo</th>
+                        <th>Función</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Ctrl+B</code></td>
+                        <td>Negrita</td>
+                        <td><code>**texto**</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+I</code></td>
+                        <td>Cursiva</td>
+                        <td><code>*texto*</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+K</code></td>
+                        <td>Código inline</td>
+                        <td><code>`código`</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+Shift+C</code></td>
+                        <td>Bloque código</td>
+                        <td><code>```javascript...```</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Tab</code></td>
+                        <td>Indentación</td>
+                        <td>2 espacios</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>¿Cómo funciona <code>event.preventDefault()</code>?</h3>
+            <p>Sin <code>preventDefault()</code>, los navegadores ejecutarían su comportamiento por defecto:</p>
+            <ul>
+                <li><code>Ctrl+B</code> → Abre búsqueda (en navegadores)</li>
+                <li><code>Tab</code> → Cambia el foco al siguiente elemento</li>
+            </ul>
+            <p>Con <code>preventDefault()</code>, impedimos esto y ejecutamos nuestra lógica personalizada.</p>
+        </div>
+
+        <div class="section" id="funciones">
+            <h2><span class="emoji">🔧</span> Funciones de Inserción de Markdown</h2>
+            
+            <h3>1. insertMarkdown() - Caso General</h3>
+            <p>Esta es la función más versátil y base de todo el sistema.</p>
+
+            <pre><code>const insertMarkdown = (before: string, after: string, placeholder: string) => {
+  const textarea = editorRef.value
+  if (!textarea) return
+
+  // 1. Obtener posición del cursor
+  const start = textarea.selectionStart
+  const end = textarea.selectionEnd
+  
+  // 2. Obtener texto seleccionado o placeholder
+  const selectedText = form.value.content.substring(start, end)
+  const textToInsert = selectedText || placeholder
+
+  // 3. Construir nuevo contenido
+  form.value.content = 
+    form.value.content.substring(0, start) +      // Antes del cursor
+    before + textToInsert + after +               // Markdown insertado
+    form.value.content.substring(end)             // Después del cursor
+
+  // 4. Re-enfocar y mover cursor
+  setTimeout(() => {
+    textarea.focus()
+    const newPosition = start + before.length + textToInsert.length
+    textarea.setSelectionRange(newPosition, newPosition)
+  })
+}</code></pre>
+
+            <h3>Flujo de Ejecución Paso a Paso</h3>
+            <div class="example">
+                <strong>Ejemplo 1: Sin selección</strong><br><br>
+                <code>insertMarkdown('**', '**', 'Texto en negrita')</code><br><br>
+                Antes: "Hola [cursor] mundo"<br>
+                Después: "Hola ****[cursor]mundo"<br>
+                (El placeholder "Texto en negrita" se reemplaza cuando el usuario escribe)
+            </div>
+
+            <div class="example">
+                <strong>Ejemplo 2: Con selección</strong><br><br>
+                Selecciona: "hola"<br>
+                Click botón Negrita<br>
+                Resultado: "**hola**[cursor]"
+            </div>
+
+            <h3>2. insertHeading() - Encabezados</h3>
+            <pre><code>const insertHeading = (level: number) => {
+  const textarea = editorRef.value
+  const start = textarea.selectionStart
+  
+  // Crear encabezado con # repetidos (H1 = #, H2 = ##, etc)
+  const heading = '#'.repeat(level) + ' Encabezado ' + level
+
+  form.value.content = 
+    form.value.content.substring(0, start) + 
+    // Agregar salto de línea ANTES si no está al inicio
+    (start > 0 && form.value.content[start - 1] !== '\n' ? '\n' : '') +
+    heading + '\n' +                              // Encabezado con salto después
+    form.value.content.substring(start)
+
+  setTimeout(() => {
+    textarea.focus()
+    textarea.setSelectionRange(start + heading.length + 2, 
+                              start + heading.length + 2)
+  })
+}</code></pre>
+
+            <p><strong>¿Por qué hace saltos de línea?</strong></p>
+            <p>Markdown requiere líneas en blanco antes/después de encabezados para que se renderice correctamente. La condición:</p>
+            <pre><code>start > 0 && form.value.content[start - 1] !== '\n'</code></pre>
+            <p>Verifica que NO estamos al inicio y que el carácter anterior NO es un salto de línea, evitando saltos dobles.</p>
+
+            <h3>3. insertList() - Listas</h3>
+            <pre><code>const insertList = (type: 'bullet' | 'ordered') => {
+  const textarea = editorRef.value
+  const start = textarea.selectionStart
+  
+  // Crear items de lista según tipo
+  const items = type === 'bullet' 
+    ? '- Elemento 1\n- Elemento 2\n- Elemento 3'
+    : '1. Elemento 1\n2. Elemento 2\n3. Elemento 3'
+
+  form.value.content = 
+    form.value.content.substring(0, start) + 
+    (start > 0 && form.value.content[start - 1] !== '\n' ? '\n' : '') +
+    items + '\n' +
+    form.value.content.substring(start)
+
+  setTimeout(() => {
+    textarea.focus()
+  })
+}</code></pre>
+
+            <p><strong>Tipos de listas generadas:</strong></p>
+            <ul>
+                <li><code>insertList('bullet')</code> → Lista con viñetas (<code>- </code>)</li>
+                <li><code>insertList('ordered')</code> → Lista numerada (<code>1. </code>)</li>
+            </ul>
+
+            <h3>4. insertCodeBlock() - Bloques de Código</h3>
+            <pre><code>const insertCodeBlock = () => {
+  const textarea = editorRef.value
+  const start = textarea.selectionStart
+  
+  // Triple backtick con lenguaje (JavaScript por defecto)
+  const codeBlock = '```javascript\n// Tu código aquí\nconstante = valor\n```'
+
+  form.value.content = 
+    form.value.content.substring(0, start) + 
+    (start > 0 && form.value.content[start - 1] !== '\n' ? '\n' : '') +
+    codeBlock + '\n' +
+    form.value.content.substring(start)
+
+  setTimeout(() => {
+    textarea.focus()
+  })
+}</code></pre>
+
+            <p>Genera un bloque formateado:</p>
+            <pre><code>```javascript
+// Tu código aquí
+constante = valor
+```</code></pre>
+
+            <h3>5. insertLink() - Enlaces</h3>
+            <pre><code>const insertLink = () => {
+  const textarea = editorRef.value
+  
+  // Pedir URL al usuario
+  const url = prompt('Ingresa la URL:')
+  if (!url) return  // Cancelado
+
+  const start = textarea.selectionStart
+  const end = textarea.selectionEnd
+  
+  // Usar texto seleccionado o placeholder
+  const selectedText = form.value.content.substring(start, end)
+  const text = selectedText || 'Texto del enlace'
+
+  // Formato markdown: [texto](url)
+  form.value.content = 
+    form.value.content.substring(0, start) +
+    '[' + text + '](' + url + ')' +
+    form.value.content.substring(end)
+
+  setTimeout(() => {
+    textarea.focus()
+  })
+}</code></pre>
+
+            <div class="example">
+                <strong>Flujo de uso:</strong><br><br>
+                1. Seleccionas "Google" en el texto<br>
+                2. Haces click en botón "Enlace"<br>
+                3. Prompt te pide URL → escribes "https://google.com"<br>
+                4. Resultado → <code>[Google](https://google.com)</code>
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section" id="preview">
+            <h2><span class="emoji">👁️</span> Preview en Tiempo Real</h2>
+            
+            <pre><code>const markdownPreview = computed(() => {
+  try {
+    // Usar librería 'marked' para convertir markdown a HTML
+    return marked.parse(form.value.content || '')
+  } catch (e) {
+    return '&lt;p class="text-red-400"&gt;Error al procesar el markdown&lt;/p&gt;'
+  }
+})</code></pre>
+
+            <h3>Configuración de marked</h3>
+            <pre><code>marked.setOptions({
+  breaks: true,        // Saltos de línea → &lt;br&gt;
+  gfm: true,          // GitHub Flavored Markdown (tablas, tachado, etc)
+})</code></pre>
+
+            <h3>¿Qué es GitHub Flavored Markdown (GFM)?</h3>
+            <p>Es una extensión de Markdown que incluye características adicionales:</p>
+            <ul>
+                <li><strong>Tablas:</strong> <code>| Header | Header |</code></li>
+                <li><strong>Tachado:</strong> <code>~~texto~~</code></li>
+                <li><strong>Listas de tareas:</strong> <code>- [ ] Tarea</code></li>
+                <li><strong>URLs automáticas:</strong> <code>https://ejemplo.com</code></li>
+            </ul>
+
+            <h3>Flujo de Conversión</h3>
+            <div class="diagram">
+Usuario escribe: **Hola**
+         ↓
+marked.parse() lo convierte a: &lt;strong&gt;Hola&lt;/strong&gt;
+         ↓
+Preview muestra: Hola (en negrita)
+            </div>
+
+            <h3>Rendering en la Plantilla</h3>
+            <pre><code>&lt;div 
+  v-if="form.content"
+  class="prose prose-invert prose-slate prose-lg max-w-none"
+  v-html="markdownPreview"
+&gt;&lt;/div&gt;
+&lt;p v-else class="text-slate-500 text-center py-12"&gt;
+  Escribe algo en el editor para ver el preview
+&lt;/p&gt;</code></pre>
+
+            <p><strong>Nota sobre <code>v-html</code>:</strong> Es seguro aquí porque:</p>
+            <ul>
+                <li><code>marked.parse()</code> sanitiza el HTML automáticamente</li>
+                <li>El usuario no puede inyectar código malicioso</li>
+                <li>Es solo para visualización, no persistencia</li>
+            </ul>
+        </div>
+
+        <div class="section" id="backend">
+            <h2><span class="emoji">🔄</span> Integración Backend</h2>
+            
+            <h3>Enviando el Contenido</h3>
+            <p>Cuando el usuario guarda, el markdown se envía como <strong>FormData</strong>:</p>
+
+            <pre><code>const savePost = async () => {
+  const formData = new FormData()
+  formData.append('content', form.value.content)  // ← Markdown en bruto
+  formData.append('image', selectedImage.value)   // Imagen (si hay)
+  formData.append('title', form.value.title)
+  formData.append('slug', form.value.slug)
+  // ... otros campos
+
+  // Enviar al backend
+  const response = await axios.post('/admin/posts', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+}</code></pre>
+
+            <h3>Backend (Laravel) - Almacenamiento</h3>
+            <pre><code>// En app/Http/Controllers/PostController.php
+$post = Post::create([
+    'title' => $data['title'],
+    'slug' => $data['slug'],
+    'content' => $data['content'],  // Almacena markdown sin procesar
+    'image_path' => $imagePath,
+    // ...
+]);</code></pre>
+
+            <p><strong>¿Por qué almacenar markdown en bruto?</strong></p>
+            <ul>
+                <li><strong>Flexibilidad:</strong> Cambiar librería de renderizado (marked → autre) sin migrar datos</li>
+                <li><strong>Editabilidad:</strong> Al editar, el usuario ve markdown nuevamente</li>
+                <li><strong>Portabilidad:</strong> Exportar contenido a otros sistemas manteniendo formato</li>
+                <li><strong>Tamaño:</strong> Markdown es más compacto que HTML</li>
+            </ul>
+
+            <h3>Frontend (Mostrar Contenido)</h3>
+            <p>En <code>ArticleDetail.vue</code>:</p>
+            <pre><code>const formattedContent = computed(() => {
+  try {
+    return marked.parse(post.value.content)
+  } catch (error) {
+    return '&lt;p&gt;Error al renderizar contenido&lt;/p&gt;'
+  }
+})</code></pre>
+
+            <div class="highlight">
+                <strong>Ventaja clave:</strong> Conversión markdown→HTML ocurre en el navegador, no en el servidor. Reduce carga del backend.
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section" id="flujo">
+            <h2><span class="emoji">📊</span> Diagrama del Flujo Completo</h2>
+            
+            <div class="diagram">
+┌─────────────────────────────────────────────────────┐
+│        Usuario escribe o selecciona texto            │
+└────────────────┬────────────────────────────────────┘
+                 │
+        ┌────────▼────────┐
+        │  ¿Botón o        │
+        │  Atajo teclado?  │
+        └────────┬────────┘
+                 │
+  ┌──────────────┼──────────────┐
+  │              │              │
+  │           Botón        Atajo (Ctrl+B, etc)
+  │              │              │
+  │  ┌───────────▼─────────────┐│
+  │  │  handleEditorKeydown()   ││
+  │  │  @click="insertMarkdown()││
+  │  └───────────┬─────────────┘│
+  │              │              │
+  └──────────────┼──────────────┘
+                 │
+        ┌────────▼──────────────────┐
+        │  Llamar función correcta:  │
+        │  insertMarkdown(),         │
+        │  insertHeading(),          │
+        │  insertLink(), etc.        │
+        └────────┬──────────────────┘
+                 │
+        ┌────────▼──────────────────────┐
+        │  1. Obtener curso (start/end)  │
+        │  2. Obtener texto seleccionado │
+        │  3. Construir nuevo contenido  │
+        │  4. Actualizar form.content    │
+        │  5. Re-enfocar textarea        │
+        └────────┬──────────────────────┘
+                 │
+        ┌────────▼──────────────────┐
+        │  marked.parse() convierte  │
+        │  markdown a HTML           │
+        │  (Computed property)       │
+        └────────┬──────────────────┘
+                 │
+        ┌────────▼──────────────────┐
+        │  Preview actualiza en      │
+        │  tiempo real v-html        │
+        └─────────────────────────────┘
+            </div>
+
+            <h3>Secuencia: Click Botón Negrita</h3>
+            <ol>
+                <li>Usuario selecciona "hola mundo"</li>
+                <li>Click en botón <code>&lt;strong&gt;B&lt;/strong&gt;</code></li>
+                <li>Ejecuta: <code>@click="insertMarkdown('**', '**', '...'")</code></li>
+                <li><code>insertMarkdown()</code> obtiene: <code>start=0, end=11, selectedText="hola mundo"</code></li>
+                <li>Construye: <code>"" + "**" + "hola mundo" + "**" + ""</code></li>
+                <li>Actualiza <code>form.content</code> → <code>"**hola mundo**"</code></li>
+                <li>Vue detecta cambio y renderiza preview</li>
+                <li><code>marked.parse("**hola mundo**")</code> → <code>"&lt;strong&gt;hola mundo&lt;/strong&gt;"</code></li>
+                <li>Preview muestra el texto en negrita</li>
+            </ol>
+        </div>
+
+        <div class="section" id="puntos">
+            <h2><span class="emoji">🎓</span> Puntos Clave de Diseño</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>Implementación</th>
+                        <th>Razón</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>ref="editorRef"</code></td>
+                        <td>Acceso directo al textarea</td>
+                        <td>Evita querySelectorAll repetidos, más eficiente</td>
+                    </tr>
+                    <tr>
+                        <td><code>substring()</code> para manipulación</td>
+                        <td>Divide antes + inserción + después</td>
+                        <td>Permite insertar en cualquier posición con precisión</td>
+                    </tr>
+                    <tr>
+                        <td><code>selectionStart/End</code></td>
+                        <td>Detecta cursor y selecciones</td>
+                        <td>Para insertar en ubicación correcta</td>
+                    </tr>
+                    <tr>
+                        <td><code>setSelectionRange()</code></td>
+                        <td>Re-posiciona cursor/selección</td>
+                        <td>Mejor UX, usuario no pierde orientación</td>
+                    </tr>
+                    <tr>
+                        <td><code>setTimeout()</code> dentro</td>
+                        <td>Esperar re-render de Vue</td>
+                        <td>Asegurar DOM esté actualizado antes de manipular</td>
+                    </tr>
+                    <tr>
+                        <td><code>marked.parse()</code> en preview</td>
+                        <td>Conversión dinámica en cliente</td>
+                        <td>Markdown en BD, HTML en vistas. Flexible y performante</td>
+                    </tr>
+                    <tr>
+                        <td><code>event.preventDefault()</code></td>
+                        <td>Evita comportamiento por defecto</td>
+                        <td>Ctrl+B no abre búsqueda, inserta markdown</td>
+                    </tr>
+                    <tr>
+                        <td><code>computed()</code> para preview</td>
+                        <td>Reactívidad automática</td>
+                        <td>Al cambiar form.content, preview se actualiza automáticamente</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Decisiones de Arquitectura</h3>
+            
+            <h4>1. ¿Por qué FormData en lugar de JSON?</h4>
+            <p>Porque también estamos subiendo imágenes. FormData es el formato estándar para archivos mixtos.</p>
+            
+            <h4>2. ¿Por qué almacenar markdown y no HTML?</h4>
+            <p>Markdown es más portable, editable y flexible que HTML procesado.</p>
+            
+            <h4>3. ¿Por qué usar <code>v-show</code> en lugar de <code>v-if</code>?</h4>
+            <p>Cambiamos entre editor y preview constantemente. <code>v-show</code> solo oculta con CSS, más rápido que destruir/recrear con <code>v-if</code>.</p>
+            
+            <h4>4. ¿Por qué setTimeout() después de insertar?</h4>
+            <p>Vue actualiza el DOM de forma asincrónica. setTimeout() garantiza que nuestro acceso a <code>selectionStart</code> ocurra después de que Vue haya re-renderizado.</p>
+        </div>
+
+        <div style="margin-top: 60px; padding-top: 40px; border-top: 2px dashed #ddd; text-align: center; color: #666;">
+            <p>Documento generado automáticamente</p>
+            <p>Explicación Detallada - Editor Markdown Avanzado</p>
+            <p><strong>Aplicación:</strong> Blog con Laravel 12 + Vue 3</p>
+        </div>
+    </div>
+</body>
+</html>
