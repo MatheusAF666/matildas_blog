@@ -57,7 +57,18 @@
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <!-- Esta sección con datos estáticos ha sido removida -->
+          <!-- Tarjeta de información del blog -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Sobre el blog</p>
+            <p class="mt-3 text-xl font-semibold text-slate-100">Matilda's Blog</p>
+            <p class="mt-1 text-xs text-slate-500">Artículos sobre crecimiento personal y tecnología</p>
+          </div>
+          <!-- Tarjeta de llamado a la acción -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Únete</p>
+            <p class="mt-3 text-lg font-semibold text-slate-100">Comparte tus historias</p>
+            <p class="mt-1 text-xs text-slate-500">Crea tu propia cuenta y publica artículos</p>
+          </div>
         </div>
       </div>
     </section>
