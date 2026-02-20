@@ -2,7 +2,7 @@
 
 FROM composer:2 AS vendor
 WORKDIR /app
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock .env.example ./
 COPY app app
 COPY bootstrap bootstrap
 COPY config config
@@ -32,7 +32,7 @@ COPY --from=vendor /app/config /app/config
 COPY --from=vendor /app/routes /app/routes
 COPY --from=vendor /app/database /app/database
 COPY --from=vendor /app/artisan /app/artisan
-COPY .env.example .env
+COPY --from=vendor /app/.env.example /app/.env
 RUN php artisan key:generate
 RUN npm run build
 
