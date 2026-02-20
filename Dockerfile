@@ -43,6 +43,7 @@ RUN mkdir -p bootstrap/cache \
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 ENV VIEW_COMPILED_PATH=/var/www/html/storage/framework/views
+ENV PHP_VERSION=8.2.30
 EXPOSE 8000
 
 CMD ["sh", "-c", "\
