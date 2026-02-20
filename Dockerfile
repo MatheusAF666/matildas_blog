@@ -37,7 +37,19 @@ RUN mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,view
 
 ENV APP_ENV=production
 ENV APP_DEBUG=false
-ENV VIEW_CACHE_PATH=/var/www/html/storage/framework/views
+ENV VIEW_CACHE_PATH=storage/framework/views
 EXPOSE 8000
 
-CMD ["sh", "-c", "mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,views}; chmod -R 775 bootstrap/cache storage; [ -f .env ] || cp .env.example .env; grep -q VIEW_CACHE_PATH .env || echo 'VIEW_CACHE_PATH=storage/framework/views' >> .env; php artisan key:generate --force; php artisan storage:link || true; php artisan migrate --force || true; php -S 0.0.0.0:${PORT:-8000} -t public"]
+CMD ["sh", "-c", "\
+mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,views}; \
+chmod -R 777 bootstrap/cache storage bootstrap; \
+[ -f .env ] || cp .env.example .env; \
+export VIEW_CACHE_PATH=storage/framework/views; \
+export CACHE_DRIVER=file; \
+php artisan key:generate --force 2>/dev/null || true; \
+rm -f bootstrap/cache/config.php bootstrap/cache/services.php 2>/dev/null || true; \
+php artisan config:cache 2>/dev/null || true; \
+php artisan storage:link || true; \
+php artisan migrate --force || true; \
+php -S 0.0.0.0:${PORT:-8000} -t public\
+"]
