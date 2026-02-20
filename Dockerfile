@@ -31,7 +31,12 @@ COPY . .
 COPY .env.example .env.example
 COPY --from=vendor /app/vendor /var/www/html/vendor
 
-RUN mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,views} \
+RUN mkdir -p bootstrap/cache \
+  && mkdir -p storage/logs \
+  && mkdir -p storage/framework/cache \
+  && mkdir -p storage/framework/sessions \
+  && mkdir -p storage/framework/views \
+  && mkdir -p storage/app/public \
   && chmod -R 775 bootstrap/cache storage \
   && chown -R www-data:www-data storage bootstrap
 
@@ -41,8 +46,8 @@ ENV VIEW_COMPILED_PATH=/var/www/html/storage/framework/views
 EXPOSE 8000
 
 CMD ["sh", "-c", "\
-mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,views}; \
-chmod -R 777 bootstrap/cache storage bootstrap; \
+mkdir -p bootstrap/cache storage/logs storage/framework/cache storage/framework/sessions storage/framework/views storage/app/public; \
+chmod -R 777 bootstrap storage; \
 [ -f .env ] || cp .env.example .env; \
 php artisan key:generate --force 2>/dev/null || true; \
 rm -f bootstrap/cache/*.php 2>/dev/null || true; \
