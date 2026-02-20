@@ -32,6 +32,8 @@ COPY --from=vendor /app/config /app/config
 COPY --from=vendor /app/routes /app/routes
 COPY --from=vendor /app/database /app/database
 COPY --from=vendor /app/artisan /app/artisan
+COPY --from=vendor /app/.env.example /app/.env
+RUN php artisan key:generate
 RUN npm run build
 
 FROM php:8.2-cli
