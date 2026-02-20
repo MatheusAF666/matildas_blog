@@ -1,14 +1,5 @@
 # syntax=docker/dockerfile:1
 
-FROM node:22-bullseye AS node-builder
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY resources resources
-COPY public public
-COPY vite.config.ts tsconfig.json ./
-RUN npm run build
-
 FROM composer:2 AS vendor
 WORKDIR /app
 COPY composer.json composer.lock ./
@@ -20,6 +11,28 @@ COPY routes routes
 COPY resources resources
 COPY artisan artisan
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+
+FROM php:8.2-cli AS node-builder
+WORKDIR /app
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+  && apt-get install -y nodejs \
+  && rm -rf /var/lib/apt/lists/*
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY resources resources
+COPY public public
+COPY vite.config.ts tsconfig.json ./
+COPY --from=vendor /app/vendor /app/vendor
+COPY --from=vendor /app/app /app/app
+COPY --from=vendor /app/bootstrap /app/bootstrap
+COPY --from=vendor /app/config /app/config
+COPY --from=vendor /app/routes /app/routes
+COPY --from=vendor /app/database /app/database
+COPY --from=vendor /app/artisan /app/artisan
+RUN npm run build
 
 FROM php:8.2-cli
 WORKDIR /var/www/html
