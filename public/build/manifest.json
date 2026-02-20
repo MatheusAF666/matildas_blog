@@ -8,7 +8,7 @@
     "name": "marked.esm"
   },
   "resources/js/app.ts": {
-    "file": "assets/app-Dw84cB-k.js",
+    "file": "assets/app-4qfy49aV.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -26,7 +26,7 @@
     ]
   },
   "resources/js/views/ArticleDetail.vue": {
-    "file": "assets/ArticleDetail-szj7MROR.js",
+    "file": "assets/ArticleDetail-CU1j88_U.js",
     "name": "ArticleDetail",
     "src": "resources/js/views/ArticleDetail.vue",
     "isDynamicEntry": true,
@@ -36,11 +36,11 @@
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/ArticleDetail-Dx5fQQZ7.css"
+      "assets/ArticleDetail-CA2kYrWZ.css"
     ]
   },
   "resources/js/views/Dashboard.vue": {
-    "file": "assets/Dashboard-DzzaxLqQ.js",
+    "file": "assets/Dashboard-CgQ2ToJa.js",
     "name": "Dashboard",
     "src": "resources/js/views/Dashboard.vue",
     "isDynamicEntry": true,
@@ -53,7 +53,7 @@
     ]
   },
   "resources/js/views/Home.vue": {
-    "file": "assets/Home-CmIkIjSC.js",
+    "file": "assets/Home-CoA1Ptpa.js",
     "name": "Home",
     "src": "resources/js/views/Home.vue",
     "isDynamicEntry": true,
@@ -62,11 +62,11 @@
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/Home-WnPW3RdJ.css"
+      "assets/Home-CClr5Ju0.css"
     ]
   },
   "resources/js/views/PostEditor.vue": {
-    "file": "assets/PostEditor-DkcYN_7w.js",
+    "file": "assets/PostEditor-DJ9BTN4-.js",
     "name": "PostEditor",
     "src": "resources/js/views/PostEditor.vue",
     "isDynamicEntry": true,
@@ -80,7 +80,7 @@
     ]
   },
   "resources/js/views/auth/Login.vue": {
-    "file": "assets/Login-BaDOY8bQ.js",
+    "file": "assets/Login-Cg2qTQZS.js",
     "name": "Login",
     "src": "resources/js/views/auth/Login.vue",
     "isDynamicEntry": true,
@@ -93,7 +93,7 @@
     ]
   },
   "resources/js/views/auth/Register.vue": {
-    "file": "assets/Register-CNe1Kqsd.js",
+    "file": "assets/Register-DuEdsgln.js",
     "name": "Register",
     "src": "resources/js/views/auth/Register.vue",
     "isDynamicEntry": true,

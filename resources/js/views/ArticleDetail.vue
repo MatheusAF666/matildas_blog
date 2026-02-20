@@ -160,32 +160,43 @@
 </template>
 
 <script setup lang="ts">
+// Importaciones necesarias
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { marked } from 'marked'
 
-// Configurar marked
+// Configuración para el parser de markdown
 marked.setOptions({
   breaks: true,
   gfm: true,
 })
 
+// Obtener la ruta actual para extraer el slug del artículo
 const route = useRoute()
-const article = ref<any>(null)
-const loading = ref(true)
-const error = ref('')
-const linkCopied = ref(false)
 
+// Variables reactivas para gestionar el estado del artículo
+const article = ref<any>(null) // Datos del artículo cargado
+const loading = ref(true) // Estado de carga del artículo
+const error = ref('') // Mensaje de error si ocurre
+const linkCopied = ref(false) // Estado del botón "Copiar enlace"
+
+/**
+ * Carga el artículo completo desde el API usando el slug de la URL
+ * Mapea los datos de la base de datos al formato esperado por el template
+ */
 const loadArticle = async () => {
   loading.value = true
   error.value = ''
   
   try {
+    // Obtener el slug de los parámetros de la ruta
     const slug = route.params.slug as string
+    // Realizar petición GET al endpoint específico del post
     const response = await axios.get(`/posts/${slug}`)
     
     if (response.data) {
+      // Mapear los datos del API al formato esperado
       article.value = {
         id: response.data.id,
         title: response.data.title,
@@ -205,6 +216,7 @@ const loadArticle = async () => {
     }
   } catch (err: any) {
     console.error('Error loading article:', err)
+    // Manejar errores específicos
     if (err.response?.status === 404) {
       error.value = 'Artículo no encontrado'
     } else {
@@ -215,15 +227,18 @@ const loadArticle = async () => {
   }
 }
 
+/**
+ * Propiedad computada que convierte el contenido markdown a HTML
+ */
 const formattedContent = computed(() => {
   if (!article.value?.content) return ''
   
   try {
-    // Parsear markdown a HTML
+    // Parsear markdown a HTML usando la librería marked
     return marked.parse(article.value.content)
   } catch (e) {
     console.error('Error parsing markdown:', e)
-    // Fallback: mostrar como texto plano con párrafos
+    // Fallback: mostrar como texto plano con párrafos si el parser falla
     return article.value.content
       .split('\n\n')
       .map((paragraph: string) => `<p class="mb-6">${paragraph.replace(/\n/g, '<br>')}</p>`)
@@ -231,6 +246,9 @@ const formattedContent = computed(() => {
   }
 })
 
+/**
+ * Formatea una fecha al formato español (ej: "25 de febrero de 2026")
+ */
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('es-ES', {
     year: 'numeric',
@@ -239,21 +257,33 @@ const formatDate = (date: string) => {
   })
 }
 
+/**
+ * Abre una ventana emergente para compartir el artículo en Twitter
+ */
 const shareOnTwitter = () => {
   const url = window.location.href
   const text = article.value?.title || ''
   window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank')
 }
 
+/**
+ * Abre una ventana emergente para compartir el artículo en Facebook
+ */
 const shareOnFacebook = () => {
   const url = window.location.href
   window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank')
 }
 
+/**
+ * Copia el enlace actual del artículo al portapapeles
+ * Muestra un mensaje de confirmación temporal
+ */
 const copyLink = async () => {
   try {
+    // Copiar la URL actual al portapapeles
     await navigator.clipboard.writeText(window.location.href)
     linkCopied.value = true
+    // Restaurar el mensaje después de 2 segundos
     setTimeout(() => {
       linkCopied.value = false
     }, 2000)
@@ -262,6 +292,7 @@ const copyLink = async () => {
   }
 }
 
+// Cargar el artículo cuando el componente se monta
 onMounted(() => {
   loadArticle()
 })

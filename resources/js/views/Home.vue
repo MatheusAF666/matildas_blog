@@ -57,24 +57,7 @@
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
-            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Lecturas</p>
-            <p class="mt-3 text-2xl font-semibold text-slate-100">+2.8k</p>
-            <p class="mt-1 text-xs text-slate-500">Últimos 30 días</p>
-          </div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
-            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Suscriptores</p>
-            <p class="mt-3 text-2xl font-semibold text-slate-100">1.3k</p>
-            <p class="mt-1 text-xs text-slate-500">Comunidad activa</p>
-          </div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 sm:col-span-2">
-            <p class="text-xs uppercase tracking-[0.25em] text-slate-400">Temas destacados</p>
-            <div class="mt-3 flex flex-wrap gap-2">
-              <span class="rounded-full bg-amber-400/20 px-3 py-1 text-xs font-semibold text-amber-300">Creatividad</span>
-              <span class="rounded-full bg-cyan-400/20 px-3 py-1 text-xs font-semibold text-cyan-300">Negocios</span>
-              <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-300">Tecnología</span>
-            </div>
-          </div>
+          <!-- Esta sección con datos estáticos ha sido removida -->
         </div>
       </div>
     </section>
@@ -234,23 +217,32 @@
 </template>
 
 <script setup lang="ts">
+// Importaciones necesarias de Vue y composables
 import { ref, computed, onMounted } from 'vue'
 import { useAuth } from '../composables/useAuth'
 import axios from 'axios'
 
+// Obtener estado de autenticación del usuario
 const { isAuthenticated } = useAuth()
-const searchQuery = ref('')
-const selectedCategory = ref<string | null>(null)
-const articles = ref<any[]>([])
-const categories = ref<string[]>([])
-const loading = ref(true)
-const error = ref('')
 
+// Variables reactivas para gestionar el estado de la página
+const searchQuery = ref('') // Término de búsqueda ingresado por el usuario
+const selectedCategory = ref<string | null>(null) // Categoría seleccionada para filtrar
+const articles = ref<any[]>([]) // Lista de artículos cargados desde el API
+const categories = ref<string[]>([]) // Lista de categorías disponibles
+const loading = ref(true) // Indica si los artículos se están cargando
+const error = ref('') // Guarda mensajes de error si ocurren
+
+/**
+ * Carga la lista de artículos desde el API
+ * Mapea los datos de la base de datos al formato esperado por el template
+ */
 const loadArticles = async () => {
   loading.value = true
   error.value = ''
   
   try {
+    // Realizar petición GET al endpoint de posts
     const response = await axios.get('/posts')
     
     if (response.data) {
@@ -280,6 +272,9 @@ const loadArticles = async () => {
   }
 }
 
+/**
+ * Carga la lista de categorías disponibles desde el API
+ */
 const loadCategories = async () => {
   try {
     const response = await axios.get('/categories')
@@ -293,12 +288,17 @@ const loadCategories = async () => {
   }
 }
 
+/**
+ * Propiedad computada que filtra los artículos según búsqueda y categoría seleccionada
+ */
 const filteredArticles = computed(() => {
   return articles.value.filter((article: any) => {
+    // Filtrar por término de búsqueda en título o extracto
     const matchesSearch =
       article.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       article.excerpt.toLowerCase().includes(searchQuery.value.toLowerCase())
 
+    // Filtrar por categoría seleccionada (si hay alguna)
     const matchesCategory = selectedCategory.value === null || 
       article.categories.some((category: any) => category.name === selectedCategory.value)
 
@@ -306,6 +306,9 @@ const filteredArticles = computed(() => {
   })
 })
 
+/**
+ * Formatea una fecha al formato español (ej: "25 de febrero de 2026")
+ */
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('es-ES', {
     year: 'numeric',
@@ -314,6 +317,7 @@ const formatDate = (date: string) => {
   })
 }
 
+// Cargar artículos y categorías al montar el componente
 onMounted(() => {
   loadArticles()
   loadCategories()

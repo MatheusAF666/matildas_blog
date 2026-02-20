@@ -1,6 +1,9 @@
 import { ref, readonly } from 'vue'
 import axios, { type AxiosError } from 'axios'
 
+/**
+ * Tipo para los datos del usuario autenticado
+ */
 type User = {
   id?: number | string
   name?: string
@@ -8,12 +11,18 @@ type User = {
   [key: string]: unknown
 }
 
+/**
+ * Tipo para la respuesta del servidor en operaciones de autenticación
+ */
 type AuthResponse = {
   status?: boolean
   user?: User
   message?: string
 }
 
+/**
+ * Tipo para las credenciales de autenticación
+ */
 type AuthCredentials = {
   email: string
   password: string
@@ -23,21 +32,35 @@ type AuthCredentials = {
   [key: string]: unknown
 }
 
+/**
+ * Tipo para el resultado de operaciones de autenticación
+ */
 type AuthResult = {
   success: boolean
   message?: string
 }
 
-const user = ref<User | null>(null)
-const isAuthenticated = ref(false)
-const loading = ref(false)
+// Variables reactivas para gestionar el estado de autenticación
+const user = ref<User | null>(null) // Usuario actualmente autenticado
+const isAuthenticated = ref(false) // Indica si el usuario está autenticado
+const loading = ref(false) // Indica si se está procesando una solicitud de autenticación
 
+/**
+ * Extrae el mensaje de error de una respuesta de Axios
+ */
 const getErrorMessage = (error: unknown, fallback: string) => {
   const axiosError = error as AxiosError<{ message?: string }>
   return axiosError.response?.data?.message ?? fallback
 }
 
+/**
+ * Composable para gestionar la autenticación del usuario
+ * Proporciona métodos para login, registro, logout y verificación de autenticación
+ */
 export function useAuth() {
+  /**
+   * Inicia sesión con el email y contraseña proporcionados
+   */
   const login = async (credentials: AuthCredentials): Promise<AuthResult> => {
     loading.value = true
     try {
@@ -60,6 +83,9 @@ export function useAuth() {
     }
   }
 
+  /**
+   * Registra un nuevo usuario con los datos proporcionados
+   */
   const register = async (credentials: AuthCredentials): Promise<AuthResult> => {
     loading.value = true
     try {
@@ -82,6 +108,9 @@ export function useAuth() {
     }
   }
 
+  /**
+   * Cierra la sesión del usuario actual
+   */
   const logout = async () => {
     try {
       await axios.post('/logout')
@@ -89,10 +118,15 @@ export function useAuth() {
       console.error('Logout error:', error)
     }
 
+    // Limpiar el estado de autenticación
     user.value = null
     isAuthenticated.value = false
   }
 
+  /**
+   * Verifica si el usuario actual tiene una sesión activa
+   * Se ejecuta generalmente al cargar la aplicación
+   */
   const checkAuth = async () => {
     try {
       const response = await axios.get<AuthResponse>('/user')
@@ -104,11 +138,13 @@ export function useAuth() {
         isAuthenticated.value = false
       }
     } catch (error: unknown) {
+      // Si hay error, el usuario no está autenticado
       user.value = null
       isAuthenticated.value = false
     }
   }
 
+  // Retornar solo referencias readonly para evitar modificaciones externas
   return {
     user: readonly(user),
     isAuthenticated: readonly(isAuthenticated),
