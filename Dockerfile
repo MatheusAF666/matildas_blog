@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 COPY . .
+COPY .env.example .env.example
 COPY --from=vendor /app/vendor /var/www/html/vendor
 
 RUN mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,views} \
@@ -38,4 +39,4 @@ ENV APP_ENV=production
 ENV APP_DEBUG=false
 EXPOSE 8000
 
-CMD ["sh", "-c", "mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,views}; chmod -R 775 bootstrap/cache storage; php artisan storage:link || true; php artisan migrate --force || true; php -S 0.0.0.0:${PORT:-8000} -t public"]
+CMD ["sh", "-c", "mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,views}; chmod -R 775 bootstrap/cache storage; [ -f .env ] || cp .env.example .env; php artisan key:generate --force; php artisan storage:link || true; php artisan migrate --force || true; php -S 0.0.0.0:${PORT:-8000} -t public"]
