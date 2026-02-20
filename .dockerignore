@@ -7,5 +7,4 @@ storage/framework/sessions
 storage/framework/views
 public/storage
 .env
-.env.*
 *.log
