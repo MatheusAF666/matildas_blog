@@ -30,7 +30,8 @@ RUN apt-get update && apt-get install -y \
 COPY . .
 COPY --from=vendor /app/vendor /var/www/html/vendor
 
-RUN chown -R www-data:www-data storage bootstrap/cache
+RUN mkdir -p bootstrap/cache storage/logs storage/framework/{cache,sessions,views} \
+  && chown -R www-data:www-data storage bootstrap/cache
 
 ENV APP_ENV=production
 ENV APP_DEBUG=false
