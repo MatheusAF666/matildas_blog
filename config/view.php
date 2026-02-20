@@ -30,10 +30,7 @@ return [
     |
     */
 
-    'compiled' => env(
-        'VIEW_CACHE_PATH',
-        realpath(storage_path('framework/views'))
-    ),
+    'compiled' => rtrim(env('VIEW_COMPILED_PATH', storage_path('framework/views')), '/'),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,6 +56,6 @@ return [
     |
     */
 
-    'cache' => env('VIEW_CACHE_PATH') !== null,
+    'cache' => true,
 
 ];
