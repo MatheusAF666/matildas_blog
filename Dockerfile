@@ -53,7 +53,7 @@ chmod -R 777 bootstrap storage; \
 php artisan key:generate --force 2>/dev/null || true; \
 rm -f bootstrap/cache/*.php 2>/dev/null || true; \
 php artisan storage:link 2>/dev/null || true; \
-php artisan migrate --force 2>/dev/null || true; \
-php artisan db:seed --force || true; \
+php artisan migrate --force; \
+php artisan db:seed --force; \
 php -S 0.0.0.0:${PORT:-8000} -t public\
 "]
