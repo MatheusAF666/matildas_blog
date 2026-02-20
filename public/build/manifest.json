@@ -1,0 +1,108 @@
+{
+  "__plugin-vue_export-helper-DlAUqK2U.js": {
+    "file": "assets/_plugin-vue_export-helper-DlAUqK2U.js",
+    "name": "_plugin-vue_export-helper"
+  },
+  "_marked.esm-i_gIkIP3.js": {
+    "file": "assets/marked.esm-i_gIkIP3.js",
+    "name": "marked.esm"
+  },
+  "resources/js/app.ts": {
+    "file": "assets/app-Dw84cB-k.js",
+    "name": "app",
+    "src": "resources/js/app.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/views/Home.vue",
+      "resources/js/views/auth/Login.vue",
+      "resources/js/views/auth/Register.vue",
+      "resources/js/views/ArticleDetail.vue",
+      "resources/js/views/Dashboard.vue",
+      "resources/js/views/PostEditor.vue",
+      "resources/js/views/PostEditor.vue"
+    ],
+    "css": [
+      "assets/app-3P63bycQ.css"
+    ]
+  },
+  "resources/js/views/ArticleDetail.vue": {
+    "file": "assets/ArticleDetail-szj7MROR.js",
+    "name": "ArticleDetail",
+    "src": "resources/js/views/ArticleDetail.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.ts",
+      "_marked.esm-i_gIkIP3.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/ArticleDetail-Dx5fQQZ7.css"
+    ]
+  },
+  "resources/js/views/Dashboard.vue": {
+    "file": "assets/Dashboard-DzzaxLqQ.js",
+    "name": "Dashboard",
+    "src": "resources/js/views/Dashboard.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.ts",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/Dashboard-D1q3bHsY.css"
+    ]
+  },
+  "resources/js/views/Home.vue": {
+    "file": "assets/Home-CmIkIjSC.js",
+    "name": "Home",
+    "src": "resources/js/views/Home.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.ts",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/Home-WnPW3RdJ.css"
+    ]
+  },
+  "resources/js/views/PostEditor.vue": {
+    "file": "assets/PostEditor-DkcYN_7w.js",
+    "name": "PostEditor",
+    "src": "resources/js/views/PostEditor.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.ts",
+      "_marked.esm-i_gIkIP3.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/PostEditor-yNAPIs5j.css"
+    ]
+  },
+  "resources/js/views/auth/Login.vue": {
+    "file": "assets/Login-BaDOY8bQ.js",
+    "name": "Login",
+    "src": "resources/js/views/auth/Login.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.ts",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/Login-Cq952BTH.css"
+    ]
+  },
+  "resources/js/views/auth/Register.vue": {
+    "file": "assets/Register-CNe1Kqsd.js",
+    "name": "Register",
+    "src": "resources/js/views/auth/Register.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.ts",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/Register-sAyy0oBQ.css"
+    ]
+  }
+}
