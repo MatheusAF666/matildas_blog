@@ -19,12 +19,8 @@ export const renderMarkdownInline = (value: string) => {
   const source = typeof value === 'string' ? value : ''
 
   try {
-    if (typeof marked.parseInline === 'function') {
-      return marked.parseInline(source)
-    }
-
     const html = marked.parse(source)
-    return html.replace(/^<p>/i, '').replace(/<\/p>\s*$/i, '')
+    return html.replace(/<\/?p[^>]*>/gi, '').trim()
   } catch {
     return source
   }
