@@ -156,9 +156,7 @@
                 {{ article.title }}
               </h3>
 
-              <p class="mt-3 line-clamp-2 text-sm text-slate-400">
-                {{ article.excerpt }}
-              </p>
+              <p class="mt-3 line-clamp-2 text-sm text-slate-400" v-html="renderExcerpt(article.excerpt)"></p>
 
               <div class="mt-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -231,6 +229,7 @@
 // Importaciones necesarias de Vue y composables
 import { ref, computed, onMounted } from 'vue'
 import { useAuth } from '../composables/useAuth'
+import { renderMarkdownInline } from '../lib/markdown'
 import axios from 'axios'
 
 // Obtener estado de autenticación del usuario
@@ -243,6 +242,8 @@ const articles = ref<any[]>([]) // Lista de artículos cargados desde el API
 const categories = ref<string[]>([]) // Lista de categorías disponibles
 const loading = ref(true) // Indica si los artículos se están cargando
 const error = ref('') // Guarda mensajes de error si ocurren
+
+const renderExcerpt = (excerpt: string) => renderMarkdownInline(excerpt)
 
 /**
  * Carga la lista de artículos desde el API
@@ -262,7 +263,7 @@ const loadArticles = async () => {
         id: post.id,
         title: post.title,
         slug: post.slug,
-        excerpt: post.meta_description || post.content?.substring(0, 150) + '...',
+        excerpt: post.meta_description || extractExcerpt(post.content),
         content: post.content,
         category: post.categories?.[0]?.name || 'Sin categoría',
         categories: post.categories || [],
@@ -281,6 +282,12 @@ const loadArticles = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const extractExcerpt = (content: string) => {
+  if (!content) return ''
+  const paragraph = content.split(/\n\s*\n/)[0]
+  return paragraph?.trim() || ''
 }
 
 /**

@@ -78,9 +78,7 @@
             </h1>
 
             <!-- Excerpt -->
-            <p class="text-xl text-slate-300 mb-8">
-              {{ article.excerpt }}
-            </p>
+            <p class="text-xl text-slate-300 mb-8" v-html="formattedExcerpt"></p>
 
             <!-- Author Info -->
             <div class="flex items-center gap-4 pb-8 border-b border-slate-800">
@@ -164,13 +162,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
-import { marked } from 'marked'
-
-// Configuración para el parser de markdown
-marked.setOptions({
-  breaks: true,
-  gfm: true,
-})
+import { renderMarkdown, renderMarkdownInline } from '../lib/markdown'
 
 // Obtener la ruta actual para extraer el slug del artículo
 const route = useRoute()
@@ -201,7 +193,7 @@ const loadArticle = async () => {
         id: response.data.id,
         title: response.data.title,
         slug: response.data.slug,
-        excerpt: response.data.meta_description || response.data.content?.substring(0, 200) + '...',
+        excerpt: response.data.meta_description || extractExcerpt(response.data.content),
         content: response.data.content,
         category: response.data.categories?.[0]?.name || 'Sin categoría',
         categories: response.data.categories || [],
@@ -232,19 +224,34 @@ const loadArticle = async () => {
  */
 const formattedContent = computed(() => {
   if (!article.value?.content) return ''
-  
+
   try {
-    // Parsear markdown a HTML usando la librería marked
-    return marked.parse(article.value.content)
+    return renderMarkdown(article.value.content)
   } catch (e) {
     console.error('Error parsing markdown:', e)
-    // Fallback: mostrar como texto plano con párrafos si el parser falla
     return article.value.content
       .split('\n\n')
       .map((paragraph: string) => `<p class="mb-6">${paragraph.replace(/\n/g, '<br>')}</p>`)
       .join('')
   }
 })
+
+const formattedExcerpt = computed(() => {
+  if (!article.value?.excerpt) return ''
+
+  try {
+    return renderMarkdownInline(article.value.excerpt)
+  } catch (e) {
+    console.error('Error parsing excerpt markdown:', e)
+    return article.value.excerpt
+  }
+})
+
+const extractExcerpt = (content: string) => {
+  if (!content) return ''
+  const paragraph = content.split(/\n\s*\n/)[0]
+  return paragraph?.trim() || ''
+}
 
 /**
  * Formatea una fecha al formato español (ej: "25 de febrero de 2026")
