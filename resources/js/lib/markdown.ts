@@ -19,7 +19,12 @@ export const renderMarkdownInline = (value: string) => {
   const source = typeof value === 'string' ? value : ''
 
   try {
-    return marked.parseInline(source)
+    if (typeof marked.parseInline === 'function') {
+      return marked.parseInline(source)
+    }
+
+    const html = marked.parse(source)
+    return html.replace(/^<p>/i, '').replace(/<\/p>\s*$/i, '')
   } catch {
     return source
   }
