@@ -12,18 +12,6 @@ COPY resources resources
 COPY artisan artisan
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
 
-FROM node:20 AS frontend
-WORKDIR /app
-RUN apt-get update \
-  && apt-get install -y php-cli \
-  && rm -rf /var/lib/apt/lists/*
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY resources resources
-COPY public public
-COPY vite.config.ts tsconfig.json ./
-RUN npm run build
-
 FROM php:8.2-cli
 WORKDIR /var/www/html
 
@@ -42,7 +30,6 @@ RUN apt-get update && apt-get install -y \
 COPY . .
 COPY .env.example .env.example
 COPY --from=vendor /app/vendor /var/www/html/vendor
-COPY --from=frontend /app/public/build /var/www/html/public/build
 
 RUN mkdir -p bootstrap/cache \
   && mkdir -p storage/logs \
