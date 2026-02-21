@@ -77,6 +77,9 @@
               {{ article.title }}
             </h1>
 
+            <!-- Excerpt -->
+            <p class="text-xl text-slate-300 mb-8" v-html="formattedExcerpt"></p>
+
             <!-- Author Info -->
             <div class="flex items-center gap-4 pb-8 border-b border-slate-800">
               <img 
