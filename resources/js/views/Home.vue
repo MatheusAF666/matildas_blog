@@ -156,7 +156,7 @@
                 {{ article.title }}
               </h3>
 
-             
+              <p class="mt-3 line-clamp-2 text-sm text-slate-400" v-html="renderExcerpt(article.excerpt)"></p>
 
               <div class="mt-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
