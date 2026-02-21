@@ -201,27 +201,7 @@
       </div>
     </section>
 
-    <!-- Newsletter Section -->
-    <section class="relative px-6 py-16 sm:py-20">
-      <div class="mx-auto max-w-2xl rounded-3xl border border-slate-800/80 bg-slate-900/40 p-8 sm:p-12 backdrop-blur">
-        <h2 class="font-display text-2xl sm:text-3xl font-semibold">Suscríbete al boletín</h2>
-        <p class="mt-2 text-slate-300">Recibe los mejores artículos directamente en tu correo.</p>
-
-        <form class="mt-6 flex flex-col gap-3 sm:flex-row">
-          <input
-            type="email"
-            placeholder="tu@email.com"
-            class="flex-1 rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-300/70 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
-          />
-          <button
-            type="submit"
-            class="rounded-xl bg-amber-400/90 px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-amber-300 transition-colors"
-          >
-            Suscribirse
-          </button>
-        </form>
-      </div>
-    </section>
+ 
   </div>
 </template>
 
