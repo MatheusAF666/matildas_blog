@@ -14,6 +14,9 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progre
 
 FROM node:20 AS frontend
 WORKDIR /app
+RUN apt-get update \
+  && apt-get install -y php-cli \
+  && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY resources resources
